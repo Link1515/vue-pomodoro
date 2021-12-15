@@ -1,28 +1,20 @@
-<template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<template lang="pug">
+#app.h-100
+  Sidebar
+  b-row.mx-0.pt-5
+    b-col(cols="12" md="6")
+      Countdown
+    b-col(cols="12" md="6")
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Sidebar from './components/Sidebar.vue'
+import Countdown from './components/Countdown.vue'
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
+    Sidebar,
+    Countdown
   }
 }
 </script>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
