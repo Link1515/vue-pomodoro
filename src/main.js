@@ -4,7 +4,7 @@ import Vue from 'vue'
 import './plugins/bootstrap-vue'
 import App from './App.vue'
 import './registerServiceWorker'
-import './style.scss'
+import './style/style.scss'
 
 Vue.config.productionTip = false
 
