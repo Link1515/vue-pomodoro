@@ -18,22 +18,23 @@
             input#finished.d-none(type="radio" value="finished" v-model="listType")
             span(href="javascript:;") 已完成
       .list-searchBar
-        input.w-100(type="text" placeholder="新增代辦事項" v-model="newItem" @keydown.enter="addItem")
+        input.w-100(type="text" maxlength="25" placeholder="新增代辦事項" v-model="newItem" @keydown.enter="addItem")
         button.addBtn(@click="addItem")
           b-icon(icon="plus")
       .list-items
-        div.d-flex(v-for="item in listItems")
+        div.d-flex.align-items-center(v-for="item in filterList")
           .list-item-checkbox.mr-3(@click="finishItem(item.id)")
             b-icon(icon="check" v-if="item.finished")
           del.mr-auto(v-if="item.finished") {{ item.text }}
-          .list-edit-icons.d-flex(v-else-if="item.editing")
-            input(type="text" v-model="item.editModel")
-            button(@click="editDone(item.id)")
-              img(:src="require('@/assets/img/icon-edit.svg')")
-            button(@click="editCancel(item.id)")
-              img(:src="require('@/assets/img/icon-cancel.svg')")
-          .list-item-text.mr-auto(v-else) {{ item.text }}
-          .list-item-icons(v-if="!item.editing")
+          .list-edit.flex-fill(v-else-if="item.editing")
+            b-form-input(type="text" maxlength="25" v-model="item.editModel" autofocus @keydown.enter="editDone(item.id)")
+            .list-edit-btns.d-flex
+              button(@click="editDone(item.id)")
+                img(:src="require('@/assets/img/icon-edit.svg')")
+              button(@click="editCancel(item.id)")
+                img(:src="require('@/assets/img/icon-cancel.svg')")
+          .list-item-text.mr-auto(@dblclick="editItem(item.id)" v-else) {{ item.text }}
+          .list-item-btns(v-if="!item.editing")
             button(@click="editItem(item.id)" v-if="!item.finished")
               img(:src="require('@/assets/img/icon-edit.svg')")
             button(@click="deleteItem(item.id)")
@@ -97,6 +98,15 @@ export default {
       const index = this.listItems.findIndex(item => item.id === id)
       this.listItems[index].editModel = this.listItems[index].text
       this.listItems[index].editing = false
+    }
+  },
+  computed: {
+    filterList () {
+      if (this.listType === 'unfinished') {
+        return this.listItems.filter(item => !item.finished)
+      } else {
+        return this.listItems.filter(item => item.finished)
+      }
     }
   },
   watch: {
@@ -177,6 +187,7 @@ export default {
       height: 56px;
       border-radius: 9999px;
       padding: 15px 24px;
+      padding-right: 70px;
     }
 
     .addBtn{
@@ -194,6 +205,10 @@ export default {
       top: 0;
       bottom: 0;
       right: 10px;
+
+      &:hover {
+        background-color: darken($color-primary, 5%)
+      }
     }
   }
 
@@ -208,6 +223,7 @@ export default {
     .list-item-checkbox{
       width: 24px;
       height: 24px;
+      margin: 7px 0;
       border-radius: 50%;
       border: 2px solid $textColor;
       display: grid;
@@ -219,15 +235,40 @@ export default {
       color: $textColor-light;
     }
 
-    .list-item-icons{
+    .list-item-btns{
+      margin-right: 5px;
       button{
+        padding: 0 5px;
         background: none;
         border: none;
+
+        &:last-child {
+          margin-left: 10px;
+        }
       }
     }
 
-    .list-edit-icons {
-      gap: 10px;
+    .list-edit {
+      position: relative;
+
+      input{
+        width: 100%;
+        border-radius: 9999px;
+        border: none;
+        padding: 6px 12px;
+        padding-right: 92px;
+        box-shadow: none;
+      }
+
+      .list-edit-btns{
+        height: 24px;
+        gap: 6px;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        right: 6px;
+      }
 
       button{
         background: $color-primary;
@@ -235,6 +276,10 @@ export default {
         border: none;
         display: grid;
         place-items: center;
+
+        &:hover{
+          background-color: darken($color-primary, 5%)
+        }
 
         img {
           width: 24px;
