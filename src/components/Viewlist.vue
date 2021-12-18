@@ -1,6 +1,7 @@
 <template lang="pug">
 #viewlist.list-items.p-5.overflow-auto
-  .d-flex.align-items-center.mb-2(v-for="item in undefinedList")
+  h1.text-center(v-if="undefinedList.length === 0") 無待辦事項
+  .d-flex.align-items-center.mb-2(v-for="item in undefinedList" v-else)
     .list-item-checkbox(@click="finishItem(item.id)")
       b-icon(icon="check" v-if="item.finished")
     .list-item-text {{ item.text }}

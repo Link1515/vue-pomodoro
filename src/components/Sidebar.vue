@@ -9,7 +9,7 @@
   b-sidebar#sidebar-lsit(no-header shadow :width="width" v-model="listIsOpen")
     .px-4.px-lg-5.py-5
       .list-header.d-flex.justify-content-between.align-items-center
-        h2 代辦清單
+        h2 待辦清單
         .list-filter
           label.mx-2(for="unfinished" :class="{active: listType === 'unfinished'}")
             input#unfinished.d-none(type="radio" value="unfinished" v-model="listType" checked)
@@ -18,7 +18,7 @@
             input#finished.d-none(type="radio" value="finished" v-model="listType")
             span 已完成
       .list-searchBar
-        input.w-100(type="text" maxlength="25" placeholder="新增代辦事項" v-model="newItem" @keydown.enter="addItem")
+        input.w-100(type="text" maxlength="25" placeholder="新增待辦事項" v-model="newItem" @keydown.enter="addItem")
         button.addBtn(@click="addItem")
           b-icon(icon="plus")
       .list-items
