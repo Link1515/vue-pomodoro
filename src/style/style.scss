@@ -13,7 +13,23 @@ img{
   background-color: #304030;
   background-image: url('~@/assets/img/tomato--orange.svg');
   background-repeat: no-repeat;
+  background-size: 100vw;
   background-position: center bottom;
   padding-left: 4rem;
+  transition: padding 0.3s linear,background-position 0.3s linear;
 }
 
+@media (min-width: 768px) {
+  #app{
+    &.push {
+      padding-left: 50vw;
+      background-position: 50vw bottom;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  #app{
+    background-size: 1200px;
+  }
+}

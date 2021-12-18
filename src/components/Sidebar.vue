@@ -13,10 +13,10 @@
         .list-filter
           label.mx-2(for="unfinished" :class="{active: listType === 'unfinished'}")
             input#unfinished.d-none(type="radio" value="unfinished" v-model="listType" checked)
-            span(href="javascript:;") 未完成
+            span 未完成
           label.mx-2(for="finished" :class="{active: listType === 'finished'}")
             input#finished.d-none(type="radio" value="finished" v-model="listType")
-            span(href="javascript:;") 已完成
+            span 已完成
       .list-searchBar
         input.w-100(type="text" maxlength="25" placeholder="新增代辦事項" v-model="newItem" @keydown.enter="addItem")
         button.addBtn(@click="addItem")
@@ -53,16 +53,25 @@ export default {
       listIsOpen: false,
       analysisIsOpen: false,
       listType: 'unfinished',
-      listLabelClass: {},
       newItem: '',
-      listItems: [],
       width: ''
+    }
+  },
+  props: {
+    listItems: {
+      type: Array,
+      default: function () {
+        return []
+      }
     }
   },
   methods: {
     resetSidebarWidth () {
       const sidebarWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) >= 768 ? '50vw' : '100vw'
       this.width = sidebarWidth
+    },
+    sendSidebarState () {
+      this.$emit('sendSidebarState')
     },
     addItem () {
       if (this.newItem.length > 0) {
@@ -107,17 +116,32 @@ export default {
       } else {
         return this.listItems.filter(item => item.finished)
       }
+    },
+    syncListItems: {
+      deep: true,
+      get () {
+        return this.listItems
+      },
+      set (value) {
+        this.$emit('update:listItems', value)
+      }
     }
   },
   watch: {
     listIsOpen () {
       if (this.listIsOpen) {
         this.analysisIsOpen = false
+        this.$emit('sendSidebarState', true)
+      } else if (!this.listIsOpen && !this.analysisIsOpen) {
+        this.$emit('sendSidebarState', false)
       }
     },
     analysisIsOpen () {
       if (this.analysisIsOpen) {
         this.listIsOpen = false
+        this.$emit('sendSidebarState', true)
+      } else if (!this.listIsOpen && !this.analysisIsOpen) {
+        this.$emit('sendSidebarState', false)
       }
     }
   },
