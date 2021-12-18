@@ -1,13 +1,70 @@
 <template lang="pug">
-#viewlist.list-items
-  div.d-flex.align-items-center(v-for="item in filterList")
-    .list-item-checkbox.mr-3(@click="finishItem(item.id)")
+#viewlist.list-items.p-5.overflow-auto
+  .d-flex.align-items-center.mb-2(v-for="item in undefinedList")
+    .list-item-checkbox(@click="finishItem(item.id)")
       b-icon(icon="check" v-if="item.finished")
-    del.mr-auto(v-if="item.finished") {{ item.text }}
-    .list-item-text.mr-auto(@dblclick="editItem(item.id)" v-else) {{ item.text }}
-    .list-item-btns(v-if="!item.editing")
-      button(@click="editItem(item.id)" v-if="!item.finished")
-        img(:src="require('@/assets/img/icon-edit.svg')")
-      button(@click="deleteItem(item.id)")
-        img(:src="require('@/assets/img/icon-cancel.svg')")
+    .list-item-text {{ item.text }}
 </template>
+
+<script>
+export default {
+  props: {
+    listItems: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
+  },
+  methods: {
+    finishItem (id) {
+      const index = this.listItems.findIndex(item => item.id === id)
+      this.listItems[index].finished = !this.listItems[index].finished
+    }
+  },
+  computed: {
+    undefinedList () {
+      return this.listItems.filter(item => !item.finished)
+    }
+  },
+  watch: {
+    listItems: {
+      deep: true,
+      handler () {
+        this.$emit('updateListItems', this.listItems)
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+@import '~@/style/variable';
+
+#viewlist{
+  height: 80vh;
+  color: $textColor;
+
+  >div:first-child{
+    font-size: 32px;
+
+    .list-item-checkbox{
+      width: 40px;
+      height: 40px;
+      margin: 0;
+      margin-right: 1rem;
+    }
+  }
+
+  .list-item-checkbox{
+    width: 24px;
+    height: 24px;
+    margin: 7px 0.5rem;
+    border-radius: 50%;
+    border: 2px solid $textColor;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+}
+</style>

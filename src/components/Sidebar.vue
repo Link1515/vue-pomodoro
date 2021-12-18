@@ -60,7 +60,7 @@ export default {
   props: {
     listItems: {
       type: Array,
-      default: function () {
+      default () {
         return []
       }
     }
@@ -116,15 +116,6 @@ export default {
       } else {
         return this.listItems.filter(item => item.finished)
       }
-    },
-    syncListItems: {
-      deep: true,
-      get () {
-        return this.listItems
-      },
-      set (value) {
-        this.$emit('update:listItems', value)
-      }
     }
   },
   watch: {
@@ -142,6 +133,12 @@ export default {
         this.$emit('sendSidebarState', true)
       } else if (!this.listIsOpen && !this.analysisIsOpen) {
         this.$emit('sendSidebarState', false)
+      }
+    },
+    listItems: {
+      deep: true,
+      handler () {
+        this.$emit('updateListItems', this.listItems)
       }
     }
   },
