@@ -1,9 +1,9 @@
 <template lang="pug">
 #sidebar
   .btns.vh-100.d-flex.flex-column.justify-content-center
-    b-btn(v-b-toggle.sidebar-lsit)
+    b-btn(v-b-toggle.sidebar-lsit :class="{active: listIsOpen}")
       img(:src="require('@/assets/img/icon-list.svg')")
-    b-btn(v-b-toggle.sidebar-analysis)
+    b-btn(v-b-toggle.sidebar-analysis :class="{active: analysisIsOpen}")
       img(:src="require('@/assets/img/icon-analysis.svg')")
 
   b-sidebar#sidebar-lsit(no-header shadow :width="width" v-model="listIsOpen")
@@ -27,7 +27,7 @@
             b-icon(icon="check" v-if="item.finished")
           del.mr-auto(v-if="item.finished") {{ item.text }}
           .list-edit.flex-fill(v-else-if="item.editing")
-            b-form-input(type="text" maxlength="25" v-model="item.editModel" autofocus @keydown.enter="editDone(item.id)")
+            b-form-input(type="text" maxlength="25" v-model="item.editModel" autofocus @keydown.enter="editDone(item.id)" @keydown.esc="editCancel(item.id)")
             .list-edit-btns.d-flex
               button(@click="editDone(item.id)")
                 img(:src="require('@/assets/img/icon-edit.svg')")
@@ -69,9 +69,6 @@ export default {
     resetSidebarWidth () {
       const sidebarWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) >= 768 ? '50vw' : '100vw'
       this.width = sidebarWidth
-    },
-    sendSidebarState () {
-      this.$emit('sendSidebarState')
     },
     addItem () {
       if (this.newItem.length > 0) {
@@ -134,12 +131,6 @@ export default {
       } else if (!this.listIsOpen && !this.analysisIsOpen) {
         this.$emit('sendSidebarState', false)
       }
-    },
-    listItems: {
-      deep: true,
-      handler () {
-        this.$emit('updateListItems', this.listItems)
-      }
     }
   },
   created () {
@@ -166,12 +157,19 @@ export default {
     button{
       background-color: transparent;
       border: none;
-      &:hover,&:active,&:focus{
+      transition: background-color 0.5s;
+      &:hover{
         background-color: #fff;
+      }
+      &:active,&:focus{
+        background-color: transparent;
       }
       &:focus{
         border: none;
         box-shadow: none;
+      }
+      &.active {
+        background-color: #fff;
       }
     }
   }

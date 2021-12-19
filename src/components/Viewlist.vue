@@ -1,7 +1,7 @@
 <template lang="pug">
 #viewlist.list-items.p-5.overflow-auto
-  h1.text-center(v-if="undefinedList.length === 0") 無待辦事項
-  .d-flex.align-items-center.mb-2(v-for="item in undefinedList" v-else)
+  h1.text-center(v-if="unfinishedList.length === 0") 無待辦事項
+  .d-flex.align-items-center.mb-2(v-for="item in unfinishedList" v-else)
     .list-item-checkbox(@click="finishItem(item.id)")
       b-icon(icon="check" v-if="item.finished")
     .list-item-text {{ item.text }}
@@ -24,16 +24,8 @@ export default {
     }
   },
   computed: {
-    undefinedList () {
+    unfinishedList () {
       return this.listItems.filter(item => !item.finished)
-    }
-  },
-  watch: {
-    listItems: {
-      deep: true,
-      handler () {
-        this.$emit('updateListItems', this.listItems)
-      }
     }
   }
 }
