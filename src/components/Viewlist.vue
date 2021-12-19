@@ -1,6 +1,9 @@
 <template lang="pug">
 #viewlist.list-items.p-5.overflow-auto
   h1.text-center(v-if="unfinishedList.length === 0") 無待辦事項
+  .breakinfo(v-else-if="countdownMode === 'break'")
+    h1 休息，
+    h3 是為了下一次的努力。
   .d-flex.align-items-center.mb-2(v-for="item in unfinishedList" v-else)
     .list-item-checkbox(@click="finishItem(item.id)")
       b-icon(icon="check" v-if="item.finished")
@@ -15,6 +18,10 @@ export default {
       default () {
         return []
       }
+    },
+    countdownMode: {
+      type: String,
+      defaule: ''
     }
   },
   methods: {
@@ -58,6 +65,10 @@ export default {
     display: grid;
     place-items: center;
     cursor: pointer;
+  }
+
+  .breakinfo h1{
+    font-size: 5rem;
   }
 }
 </style>

@@ -39,14 +39,17 @@
               img(:src="require('@/assets/img/icon-edit.svg')")
             button(@click="deleteItem(item.id)")
               img(:src="require('@/assets/img/icon-cancel.svg')")
-  b-sidebar#sidebar-analysis(shadow :width="width" v-model="analysisIsOpen")
-    .px-3.py-2
-      p
-        | 22222Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-        | in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+  b-sidebar#sidebar-analysis(no-header shadow :width="width" v-model="analysisIsOpen")
+    .px-4.px-lg-5.py-5
+      h2 專注度分析
+      .aa(style="width: 300px; height: 60px; background: #fa0")
+      Barchart(:chartdata="chartdata" style="position: relative; height:40vh;")
+
 </template>
 
 <script>
+import Barchart from '@/components/Barchart.vue'
+
 export default {
   data () {
     return {
@@ -54,7 +57,22 @@ export default {
       analysisIsOpen: false,
       listType: 'unfinished',
       newItem: '',
-      width: ''
+      width: '',
+      chartdata: {
+        labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+        datasets: [{
+          data: [7, 4, 8, 2, 10, 6, 7],
+          backgroundColor: [
+            '#6C9460',
+            '#6C9460',
+            '#6C9460',
+            '#6C9460',
+            '#6C9460',
+            '#6C9460',
+            '#F08448'
+          ]
+        }]
+      }
     }
   },
   props: {
@@ -64,6 +82,9 @@ export default {
         return []
       }
     }
+  },
+  components: {
+    Barchart
   },
   methods: {
     resetSidebarWidth () {
