@@ -1,12 +1,12 @@
 <template lang="pug">
 #sidebar
   .btns.vh-100.d-flex.flex-column.justify-content-center
-    b-btn(v-b-toggle.sidebar-lsit :class="{active: listIsOpen}")
+    b-btn(v-b-toggle.sidebar-list :class="{active: listIsOpen}")
       img(:src="require('@/assets/img/icon-list.svg')")
     b-btn(v-b-toggle.sidebar-analysis :class="{active: analysisIsOpen}")
       img(:src="require('@/assets/img/icon-analysis.svg')")
 
-  b-sidebar#sidebar-lsit(no-header shadow :width="width" v-model="listIsOpen")
+  b-sidebar#sidebar-list(no-header shadow :width="width" v-model="listIsOpen")
     .px-4.px-lg-5.py-5
       .list-header.d-flex.justify-content-between.align-items-center
         h2 待辦清單
@@ -40,9 +40,28 @@
             button(@click="deleteItem(item.id)")
               img(:src="require('@/assets/img/icon-cancel.svg')")
   b-sidebar#sidebar-analysis(no-header shadow :width="width" v-model="analysisIsOpen")
-    .px-4.px-lg-5.py-5
+    .px-4.px-lg-5.py-5.vh-100.d-flex.flex-column.justify-content-between
       h2 專注度分析
-      .aa(style="width: 300px; height: 60px; background: #fa0")
+      b-row.analysis-statistics
+        b-col.analysis-item(cols="12" xl="6")
+          h3.mb-3 今日
+            span.date.ml-3 2021 . 12 .21
+          .analysis-card.text-center.d-flex.justify-content-evenly.py-3.mt-3
+            .analysis-cardItem.w-50
+              h4.green 9
+              p 待辦事項
+            .analysis-cardItem.w-50
+              h4.orange 7
+              p 已完成
+        b-col.analysis-item.d-none.d-xl-block(cols="6")
+          h3.mb-3 本週
+          .analysis-card.d-flex.text-center.d-flex.justify-content-evenly.py-3.mt-3
+            .analysis-cardItem.w-50
+              h4.green 54
+              p 待辦事項
+            .analysis-cardItem.w-50
+              h4.orange 48
+              p 已完成
       Barchart(:chartdata="chartdata" style="position: relative; height:40vh;")
 
 </template>
@@ -165,10 +184,13 @@ export default {
 @import '~@/style/variable';
 
 #sidebar{
-  font-family: 'Noto Sans TC', sans-serif;
   position: absolute;
   left: 0;
   top: 0;
+
+  h2{
+    font-size: calc(25px + 1vw);
+  }
 
   .btns{
     background-color: $textColor;
@@ -195,7 +217,7 @@ export default {
     }
   }
 
-  #sidebar-lsit,
+  #sidebar-list,
   #sidebar-analysis{
     background-color: #304030 !important;
     color: white !important;
@@ -325,6 +347,59 @@ export default {
           width: 24px;
           padding: 0 3px;
         }
+      }
+    }
+  }
+
+  .analysis-statistics{
+    height: 35vh;
+    color: $textColor;
+  }
+
+  .analysis-card{
+    border: 1px solid $textColor-light;
+    border-radius: 10px;
+    position: relative;
+
+    &::after{
+      content: '';
+      width: 1px;
+      height: 80%;
+      background-color: $textColor-light;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
+  }
+
+  .analysis-item{
+    h3, .date{
+      font-size: 24px;
+    }
+
+    .date{
+      color: $textColor-light;
+    }
+
+    .analysis-cardItem{
+      h4{
+        font-size: calc(70px + 1vw);
+
+        &.green {
+          color: $color-secondary;
+        }
+
+        &.orange {
+          color: $color-primary;
+        }
+      }
+
+      p {
+        font-size: 24px;
+        font-weight: 300;
       }
     }
   }
