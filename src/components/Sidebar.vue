@@ -51,16 +51,16 @@
               h4.green {{ analysis.todayUnfinished }}
               p 待辦事項
             .analysis-cardItem.w-50
-              h4.orange 7
+              h4.orange {{ analysis.todayFinished }}
               p 已完成
         b-col.analysis-item.d-none.d-xl-block(cols="6")
           h3.mb-3 本週
           .analysis-card.d-flex.text-center.d-flex.justify-content-evenly.py-3.mt-3
             .analysis-cardItem.w-50
-              h4.green 54
+              h4.green {{ analysis.weekUnfinished }}
               p 待辦事項
             .analysis-cardItem.w-50
-              h4.orange 48
+              h4.orange {{ analysis.weekFinished }}
               p 已完成
       Barchart(:chartdata="chartdata" style="position: relative; height:40vh;")
 
@@ -80,7 +80,7 @@ export default {
       chartdata: {
         labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
         datasets: [{
-          data: [7, 4, 8, 2, 10, 6, 7],
+          data: [0, 0, 0, 0, 0, 0, 6],
           backgroundColor: [
             '#6C9460',
             '#6C9460',
@@ -126,15 +126,28 @@ export default {
           editing: false
         })
         this.newItem = ''
+        this.analysis.todayUnfinished++
+        this.analysis.weekUnfinished++
       }
     },
     finishItem (id) {
       const index = this.listItems.findIndex(item => item.id === id)
       this.listItems[index].finished = !this.listItems[index].finished
       this.listItems[index].editing = false
+      if (this.listItems[index].finished) {
+        this.analysis.todayFinished++
+        this.analysis.weekFinished++
+      } else {
+        this.analysis.todayFinished--
+        this.analysis.weekFinished--
+      }
     },
     deleteItem (id) {
       const index = this.listItems.findIndex(item => item.id === id)
+      if (!this.listItems[index].finished) {
+        this.analysis.todayUnfinished--
+        this.analysis.weekUnfinished--
+      }
       this.listItems.splice(index, 1)
     },
     editItem (id) {
@@ -177,14 +190,14 @@ export default {
       } else if (!this.listIsOpen && !this.analysisIsOpen) {
         this.$emit('sendSidebarState', false)
       }
-    },
-    listItems () {
-      const newListIndex = this.listItems.at(-1).id
-      const newListDate = (new Date(newListIndex)).toDateString()
-      if (newListDate === (new Date(Date.now())).toDateString()) {
-        this.analysis.todayUnfinished++
-      }
     }
+    // listItems () {
+    //   const newListIndex = this.listItems.at(-1).id
+    //   const newListDate = (new Date(newListIndex)).toDateString()
+    //   if (newListDate === (new Date(Date.now())).toDateString()) {
+    //     this.analysis.todayUnfinished++
+    //   }
+    // }
   },
   created () {
     this.resetSidebarWidth()
