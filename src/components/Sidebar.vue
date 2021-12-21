@@ -48,7 +48,7 @@
             span.date.ml-3 2021 . 12 .21
           .analysis-card.text-center.d-flex.justify-content-evenly.py-3.mt-3
             .analysis-cardItem.w-50
-              h4.green 9
+              h4.green {{ analysis.todayUnfinished }}
               p 待辦事項
             .analysis-cardItem.w-50
               h4.orange 7
@@ -91,6 +91,12 @@ export default {
             '#F08448'
           ]
         }]
+      },
+      analysis: {
+        todayUnfinished: 0,
+        todayFinished: 0,
+        weekUnfinished: 0,
+        weekFinished: 0
       }
     }
   },
@@ -170,6 +176,13 @@ export default {
         this.$emit('sendSidebarState', true)
       } else if (!this.listIsOpen && !this.analysisIsOpen) {
         this.$emit('sendSidebarState', false)
+      }
+    },
+    listItems () {
+      const newListIndex = this.listItems.at(-1).id
+      const newListDate = (new Date(newListIndex)).toDateString()
+      if (newListDate === (new Date(Date.now())).toDateString()) {
+        this.analysis.todayUnfinished++
       }
     }
   },
