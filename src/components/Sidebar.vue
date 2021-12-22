@@ -1,62 +1,115 @@
 <template lang="pug">
 #sidebar
   .btns.vh-100.d-flex.flex-column.justify-content-center
-    b-btn(v-b-toggle.sidebar-lsit)
+    b-btn(v-b-toggle.sidebar-list :class="{active: listIsOpen}")
       img(:src="require('@/assets/img/icon-list.svg')")
-    b-btn(v-b-toggle.sidebar-analysis)
+    b-btn(v-b-toggle.sidebar-analysis :class="{active: analysisIsOpen}")
       img(:src="require('@/assets/img/icon-analysis.svg')")
 
-  b-sidebar#sidebar-lsit(no-header shadow :width="width" v-model="listIsOpen")
+  b-sidebar#sidebar-list(no-header shadow :width="width" v-model="listIsOpen")
     .px-4.px-lg-5.py-5
       .list-header.d-flex.justify-content-between.align-items-center
-        h2 代辦清單
+        h2 待辦清單
         .list-filter
           label.mx-2(for="unfinished" :class="{active: listType === 'unfinished'}")
             input#unfinished.d-none(type="radio" value="unfinished" v-model="listType" checked)
-            span(href="javascript:;") 未完成
+            span 未完成
           label.mx-2(for="finished" :class="{active: listType === 'finished'}")
             input#finished.d-none(type="radio" value="finished" v-model="listType")
-            span(href="javascript:;") 已完成
+            span 已完成
       .list-searchBar
-        input.w-100(type="text" placeholder="新增代辦事項" v-model="newItem" @keydown.enter="addItem")
+        input.w-100(type="text" maxlength="25" placeholder="新增待辦事項" v-model="newItem" @keydown.enter="addItem")
         button.addBtn(@click="addItem")
           b-icon(icon="plus")
       .list-items
-        div.d-flex(v-for="item in listItems")
+        div.d-flex.align-items-center(v-for="item in filterList")
           .list-item-checkbox.mr-3(@click="finishItem(item.id)")
             b-icon(icon="check" v-if="item.finished")
           del.mr-auto(v-if="item.finished") {{ item.text }}
-          .list-edit-icons.d-flex(v-else-if="item.editing")
-            input(type="text" v-model="item.editModel")
-            button(@click="editDone(item.id)")
-              img(:src="require('@/assets/img/icon-edit.svg')")
-            button(@click="editCancel(item.id)")
-              img(:src="require('@/assets/img/icon-cancel.svg')")
-          .list-item-text.mr-auto(v-else) {{ item.text }}
-          .list-item-icons(v-if="!item.editing")
+          .list-edit.flex-fill(v-else-if="item.editing")
+            b-form-input(type="text" maxlength="25" v-model="item.editModel" autofocus @keydown.enter="editDone(item.id)" @keydown.esc="editCancel(item.id)")
+            .list-edit-btns.d-flex
+              button(@click="editDone(item.id)")
+                img(:src="require('@/assets/img/icon-edit.svg')")
+              button(@click="editCancel(item.id)")
+                img(:src="require('@/assets/img/icon-cancel.svg')")
+          .list-item-text.mr-auto(@dblclick="editItem(item.id)" v-else) {{ item.text }}
+          .list-item-btns(v-if="!item.editing")
             button(@click="editItem(item.id)" v-if="!item.finished")
               img(:src="require('@/assets/img/icon-edit.svg')")
             button(@click="deleteItem(item.id)")
               img(:src="require('@/assets/img/icon-cancel.svg')")
-  b-sidebar#sidebar-analysis(shadow :width="width" v-model="analysisIsOpen")
-    .px-3.py-2
-      p
-        | 22222Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-        | in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+  b-sidebar#sidebar-analysis(no-header shadow :width="width" v-model="analysisIsOpen")
+    .px-4.px-lg-5.py-5.vh-100.d-flex.flex-column.justify-content-between
+      h2 專注度分析
+      b-row.analysis-statistics
+        b-col.analysis-item(cols="12" xl="6")
+          h3.mb-3 今日
+            span.date.ml-3 2021 . 12 .21
+          .analysis-card.text-center.d-flex.justify-content-evenly.py-3.mt-3
+            .analysis-cardItem.w-50
+              h4.green {{ analysis.todayUnfinished }}
+              p 待辦事項
+            .analysis-cardItem.w-50
+              h4.orange {{ analysis.todayFinished }}
+              p 已完成
+        b-col.analysis-item.d-none.d-xl-block(cols="6")
+          h3.mb-3 本週
+          .analysis-card.d-flex.text-center.d-flex.justify-content-evenly.py-3.mt-3
+            .analysis-cardItem.w-50
+              h4.green {{ analysis.weekUnfinished }}
+              p 待辦事項
+            .analysis-cardItem.w-50
+              h4.orange {{ analysis.weekFinished }}
+              p 已完成
+      Barchart(:chartdata="chartdata" style="position: relative; height:40vh;")
+
 </template>
 
 <script>
+import Barchart from '@/components/Barchart.vue'
+
 export default {
   data () {
     return {
       listIsOpen: false,
       analysisIsOpen: false,
       listType: 'unfinished',
-      listLabelClass: {},
       newItem: '',
-      listItems: [],
-      width: ''
+      width: '',
+      chartdata: {
+        labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+        datasets: [{
+          data: [0, 0, 0, 0, 0, 0, 0],
+          backgroundColor: [
+            '#6C9460',
+            '#6C9460',
+            '#6C9460',
+            '#6C9460',
+            '#6C9460',
+            '#6C9460',
+            '#F08448'
+          ]
+        }]
+      },
+      analysis: {
+        todayUnfinished: 0,
+        todayFinished: 0,
+        weekUnfinished: 0,
+        weekFinished: 0
+      }
     }
+  },
+  props: {
+    listItems: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
+  },
+  components: {
+    Barchart
   },
   methods: {
     resetSidebarWidth () {
@@ -73,15 +126,28 @@ export default {
           editing: false
         })
         this.newItem = ''
+        this.analysis.todayUnfinished++
+        this.analysis.weekUnfinished++
       }
     },
     finishItem (id) {
       const index = this.listItems.findIndex(item => item.id === id)
       this.listItems[index].finished = !this.listItems[index].finished
       this.listItems[index].editing = false
+      if (this.listItems[index].finished) {
+        this.analysis.todayFinished++
+        this.analysis.weekFinished++
+      } else {
+        this.analysis.todayFinished--
+        this.analysis.weekFinished--
+      }
     },
     deleteItem (id) {
       const index = this.listItems.findIndex(item => item.id === id)
+      if (!this.listItems[index].finished) {
+        this.analysis.todayUnfinished--
+        this.analysis.weekUnfinished--
+      }
       this.listItems.splice(index, 1)
     },
     editItem (id) {
@@ -99,21 +165,47 @@ export default {
       this.listItems[index].editing = false
     }
   },
+  computed: {
+    filterList () {
+      if (this.listType === 'unfinished') {
+        return this.listItems.filter(item => !item.finished)
+      } else {
+        return this.listItems.filter(item => item.finished)
+      }
+    }
+  },
   watch: {
     listIsOpen () {
       if (this.listIsOpen) {
         this.analysisIsOpen = false
+        this.$emit('sendSidebarState', true)
+      } else if (!this.listIsOpen && !this.analysisIsOpen) {
+        this.$emit('sendSidebarState', false)
       }
     },
     analysisIsOpen () {
       if (this.analysisIsOpen) {
         this.listIsOpen = false
+        this.$emit('sendSidebarState', true)
+      } else if (!this.listIsOpen && !this.analysisIsOpen) {
+        this.$emit('sendSidebarState', false)
+      }
+    },
+    analysis: {
+      deep: true,
+      handler () {
+        this.chartdata.datasets[0].data[6] = this.analysis.todayFinished
+        localStorage.setItem('pomodoro-analysis-data', JSON.stringify(this.analysis))
       }
     }
   },
   created () {
     this.resetSidebarWidth()
     window.addEventListener('resize', this.resetSidebarWidth)
+    const localData = JSON.parse(localStorage.getItem('pomodoro-analysis-data'))
+    if (localData) {
+      this.analysis = localData
+    }
   }
 }
 </script>
@@ -122,10 +214,13 @@ export default {
 @import '~@/style/variable';
 
 #sidebar{
-  font-family: 'Noto Sans TC', sans-serif;
   position: absolute;
   left: 0;
   top: 0;
+
+  h2{
+    font-size: calc(25px + 1vw);
+  }
 
   .btns{
     background-color: $textColor;
@@ -135,17 +230,24 @@ export default {
     button{
       background-color: transparent;
       border: none;
-      &:hover,&:active,&:focus{
+      transition: background-color 0.5s;
+      &:hover{
         background-color: #fff;
+      }
+      &:active,&:focus{
+        background-color: transparent;
       }
       &:focus{
         border: none;
         box-shadow: none;
       }
+      &.active {
+        background-color: #fff;
+      }
     }
   }
 
-  #sidebar-lsit,
+  #sidebar-list,
   #sidebar-analysis{
     background-color: #304030 !important;
     color: white !important;
@@ -177,6 +279,7 @@ export default {
       height: 56px;
       border-radius: 9999px;
       padding: 15px 24px;
+      padding-right: 70px;
     }
 
     .addBtn{
@@ -194,6 +297,10 @@ export default {
       top: 0;
       bottom: 0;
       right: 10px;
+
+      &:hover {
+        background-color: darken($color-primary, 5%)
+      }
     }
   }
 
@@ -208,6 +315,7 @@ export default {
     .list-item-checkbox{
       width: 24px;
       height: 24px;
+      margin: 7px 0;
       border-radius: 50%;
       border: 2px solid $textColor;
       display: grid;
@@ -219,15 +327,40 @@ export default {
       color: $textColor-light;
     }
 
-    .list-item-icons{
+    .list-item-btns{
+      margin-right: 5px;
       button{
+        padding: 0 5px;
         background: none;
         border: none;
+
+        &:last-child {
+          margin-left: 10px;
+        }
       }
     }
 
-    .list-edit-icons {
-      gap: 10px;
+    .list-edit {
+      position: relative;
+
+      input{
+        width: 100%;
+        border-radius: 9999px;
+        border: none;
+        padding: 6px 12px;
+        padding-right: 92px;
+        box-shadow: none;
+      }
+
+      .list-edit-btns{
+        height: 24px;
+        gap: 6px;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        right: 6px;
+      }
 
       button{
         background: $color-primary;
@@ -236,10 +369,67 @@ export default {
         display: grid;
         place-items: center;
 
+        &:hover{
+          background-color: darken($color-primary, 5%)
+        }
+
         img {
           width: 24px;
           padding: 0 3px;
         }
+      }
+    }
+  }
+
+  .analysis-statistics{
+    height: 35vh;
+    color: $textColor;
+  }
+
+  .analysis-card{
+    border: 1px solid $textColor-light;
+    border-radius: 10px;
+    position: relative;
+
+    &::after{
+      content: '';
+      width: 1px;
+      height: 80%;
+      background-color: $textColor-light;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
+  }
+
+  .analysis-item{
+    h3, .date{
+      font-size: 24px;
+    }
+
+    .date{
+      color: $textColor-light;
+    }
+
+    .analysis-cardItem{
+      h4{
+        font-size: calc(70px + 1vw);
+
+        &.green {
+          color: $color-secondary;
+        }
+
+        &.orange {
+          color: $color-primary;
+        }
+      }
+
+      p {
+        font-size: 24px;
+        font-weight: 300;
       }
     }
   }

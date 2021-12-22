@@ -2,18 +2,9 @@
 
 body{
   height: 100vh;
-  font-family: 'Fjalla One', sans-serif;
+  font-family: 'Fjalla One', 'Noto Sans TC', sans-serif;
 }
 
 img{
   width: 100%;
 }
-
-#app{
-  background-color: #304030;
-  background-image: url('~@/assets/img/tomato--orange.svg');
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  padding-left: 4rem;
-}
-
