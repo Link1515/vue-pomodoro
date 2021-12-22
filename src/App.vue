@@ -34,6 +34,20 @@ export default {
     updateCountdownMode (value) {
       this.countdownMode = value
     }
+  },
+  watch: {
+    listItems: {
+      deep: true,
+      handler () {
+        localStorage.setItem('pomodoro-listItems', JSON.stringify(this.listItems))
+      }
+    }
+  },
+  created () {
+    const localData = JSON.parse(localStorage.getItem('pomodoro-listItems'))
+    if (localData) {
+      this.listItems = localData
+    }
   }
 }
 </script>

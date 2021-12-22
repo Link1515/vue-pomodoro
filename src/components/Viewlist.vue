@@ -42,7 +42,7 @@ export default {
 @import '~@/style/variable';
 
 #viewlist{
-  height: 80vh;
+  height: 50vh;
   color: $textColor;
 
   >div:first-child{
@@ -69,6 +69,12 @@ export default {
 
   .breakinfo h1{
     font-size: 5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  #viewlist{
+    height: 80vh;
   }
 }
 </style>

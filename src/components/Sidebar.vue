@@ -80,7 +80,7 @@ export default {
       chartdata: {
         labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
         datasets: [{
-          data: [0, 0, 0, 0, 0, 0, 6],
+          data: [0, 0, 0, 0, 0, 0, 0],
           backgroundColor: [
             '#6C9460',
             '#6C9460',
@@ -190,18 +190,22 @@ export default {
       } else if (!this.listIsOpen && !this.analysisIsOpen) {
         this.$emit('sendSidebarState', false)
       }
+    },
+    analysis: {
+      deep: true,
+      handler () {
+        this.chartdata.datasets[0].data[6] = this.analysis.todayFinished
+        localStorage.setItem('pomodoro-analysis-data', JSON.stringify(this.analysis))
+      }
     }
-    // listItems () {
-    //   const newListIndex = this.listItems.at(-1).id
-    //   const newListDate = (new Date(newListIndex)).toDateString()
-    //   if (newListDate === (new Date(Date.now())).toDateString()) {
-    //     this.analysis.todayUnfinished++
-    //   }
-    // }
   },
   created () {
     this.resetSidebarWidth()
     window.addEventListener('resize', this.resetSidebarWidth)
+    const localData = JSON.parse(localStorage.getItem('pomodoro-analysis-data'))
+    if (localData) {
+      this.analysis = localData
+    }
   }
 }
 </script>
