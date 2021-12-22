@@ -42,5 +42,8 @@
     "sass-loader": "^10.0.2",
     "vue-cli-plugin-bootstrap-vue": "~0.8.2",
     "vue-template-compiler": "^2.6.11"
+  },
+  "engines": {
+    "node": ">= 17.0.0"
   }
 }
