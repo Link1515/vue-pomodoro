@@ -1,23 +1,43 @@
-<script setup>
-console.log(import.meta.env.VITE_TIME)
-</script>
-
 <template>
 <div id="countdown">
-  <h2 class="countdown_time">00:00</h2>
+  <h2 class="countdown_time">{{timeMin}}:{{timeSec}}</h2>
   <div class="countdown_btns">
     <v-btn variant="outlined" icon>
       <img src="@/assets/images/icon-bell.svg">
     </v-btn>
-    <v-btn color="white" icon size="large">
-      <img src="@/assets/images/icon-play--orange.svg">
+    <v-btn
+      @click="store.startCountdown"
+      v-if="!store.isPlaying"
+      color="white"
+      icon size="large"
+    >
+      <img v-if="store.isWorking" src="@/assets/images/icon-play--orange.svg">
+      <img v-else src="@/assets/images/icon-play--green.svg">
     </v-btn>
-    <v-btn variant="outlined" icon>
+    <v-btn
+      @click="store.pauseCountdown"
+      v-else
+      color="white"
+      icon size="large"
+    >
+      <img v-if="store.isWorking" src="@/assets/images/icon-pause--orange.svg">
+      <img v-else src="@/assets/images/icon-pause--green.svg">
+    </v-btn>
+    <v-btn @click="store.passCountdown()" variant="outlined" icon>
       <img src="@/assets/images/icon-cancel.svg">
     </v-btn>
   </div>
 </div>
 </template>
+
+<script setup>
+import { computed } from 'vue'
+import { useStore } from '../store/index.js'
+
+const store = useStore()
+const timeMin = computed(() => Math.floor(store.currentTime / 60).toString().padStart(2, '0'))
+const timeSec = computed(() => (store.currentTime % 60).toString().padStart(2, '0'))
+</script>
 
 <style lang="scss" scoped>
 .countdown_time {

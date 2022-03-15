@@ -19,9 +19,9 @@
       class="sidebar_list"
       v-model="sidebarState.list"
       width="auto"
-      style="width: calc(50vw - 72px); background: var(--theme-color); box-shadow: 0 10px 10px rgba(0,0,0,0.5)"
+      style="width: calc(50vw - 72px); background: var(--theme-color); box-shadow: 0 10px 10px rgba(0,0,0,0.5); padding: 3rem 2rem"
     >
-      listSidebar
+      <ListEditor />
     </v-navigation-drawer>
     <v-navigation-drawer
     class="sidebar_analysis"
@@ -36,6 +36,7 @@
 </template>
 
 <script setup>
+import ListEditor from './ListEditor.vue'
 import { useStore } from '../../store/index.js'
 import { storeToRefs } from 'pinia'
 import { reactive, computed } from 'vue'
@@ -50,10 +51,8 @@ sidebarIsOpen.value = computed(() => {
 })
 
 function toggleSidebar (iconType) {
-  if (!sidebarState.list && !sidebarState.analysis) {
+  if ((!sidebarState.list && !sidebarState.analysis) || sidebarState[iconType]) {
     sidebarState[iconType] = !sidebarState[iconType]
-  } else if (sidebarState[iconType]) {
-    sidebarState[iconType] = false
   } else {
     sidebarState.list = !sidebarState.list
     sidebarState.analysis = !sidebarState.analysis

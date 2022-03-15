@@ -1,12 +1,12 @@
 <template>
 <div id="main"
   class="overflow-hidden"
-  :class="{push: sidebarIsOpen, break: countdownMode === 'break'}"
+  :class="{push: store.sidebarIsOpen, break: !store.isWorking}"
 >
   <SidebarItem />
   <v-row class="mx-0 pt-5 overflow-hidden flex-md-nowrap">
     <v-col
-      cols="12" :md="sidebarIsOpen ? 12 : 6"
+      cols="12" :md="store.sidebarIsOpen ? 12 : 6"
       style="transition: 0.5s"
       class="flex-shrink-0"
     >
@@ -21,8 +21,7 @@
 import CountdownItem from './components/CountdownItem.vue'
 import SidebarItem from './components/SidebarItem/index.vue'
 import { useStore } from './store/index.js'
-import { storeToRefs } from 'pinia'
-const { sidebarIsOpen } = storeToRefs(useStore())
+const store = useStore()
 </script>
 <script>
 export default {
