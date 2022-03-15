@@ -1,13 +1,3 @@
-<script setup>
-import CountdownItem from './components/CountdownItem.vue'
-import SidebarItem from './components/SidebarItem.vue'
-</script>
-<script>
-export default {
-  name: 'App'
-}
-</script>
-
 <template>
 <div id="main"
   class="overflow-hidden"
@@ -27,11 +17,24 @@ export default {
 </div>
 </template>
 
+<script setup>
+import CountdownItem from './components/CountdownItem.vue'
+import SidebarItem from './components/SidebarItem/index.vue'
+import { useStore } from './store/index.js'
+import { storeToRefs } from 'pinia'
+const { sidebarIsOpen } = storeToRefs(useStore())
+</script>
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
 <style lang="scss">
   #main {
     height: 100vh;
-    background-color: #304030;
-    // background-image: url('~@/assets/img/tomato--orange.svg');
+    background-color: var(--theme-color);
+    background-image: url('@/assets/images/tomato--orange.svg');
     background-repeat: no-repeat;
     background-size: 100vw;
     background-position: center bottom;
@@ -39,7 +42,7 @@ export default {
     transition: padding 0.3s linear,background-position 0.3s linear;
 
     &.break {
-      // background-image: url('~@/assets/img/tomato--green.svg');
+      background-image: url('@/assets/images/tomato--green.svg');
     }
   }
 
