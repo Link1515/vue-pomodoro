@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@mdi/font": "5.9.55",
+    "nanoid": "^3.3.1",
     "pinia": "^2.0.12",
+    "pinia-plugin-persistedstate": "^1.5.1",
     "roboto-fontface": "*",
     "scss": "^0.2.4",
     "vue": "^3.2.25",

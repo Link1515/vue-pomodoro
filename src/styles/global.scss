@@ -9,3 +9,14 @@ body {
   font-family: 'Fjalla One', sans-serif;
   color: white;
 }
+
+.v-checkbox {
+  .v-label {
+    color: white;
+  }
+
+  &.v-input--dirty .v-label {
+    color: #aaa;
+  }
+
+}

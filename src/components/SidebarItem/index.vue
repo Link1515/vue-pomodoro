@@ -20,6 +20,7 @@
       v-model="sidebarState.list"
       width="auto"
       style="width: calc(50vw - 72px); background: var(--theme-color); box-shadow: 0 10px 10px rgba(0,0,0,0.5); padding: 3rem 2rem"
+      :style="{width: `calc(${sidebarWidth} - 72px)`}"
     >
       <ListEditor />
     </v-navigation-drawer>
@@ -39,7 +40,7 @@
 import ListEditor from './ListEditor.vue'
 import { useStore } from '../../store/index.js'
 import { storeToRefs } from 'pinia'
-import { reactive, computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
 
 const { sidebarIsOpen } = storeToRefs(useStore())
 const sidebarState = reactive({
@@ -58,6 +59,14 @@ function toggleSidebar (iconType) {
     sidebarState.analysis = !sidebarState.analysis
   }
 }
+
+function resizeSidebar () {
+  return Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) >= 960 ? '50vw' : '100vw'
+}
+const sidebarWidth = ref(resizeSidebar())
+window.addEventListener('resize', () => {
+  sidebarWidth.value = resizeSidebar()
+})
 </script>
 
 <style lang="scss" scoped>

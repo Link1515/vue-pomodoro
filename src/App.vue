@@ -12,13 +12,16 @@
     >
       <CountdownItem/>
     </v-col>
-    <v-col cols="12">12</v-col>
+    <v-col cols="12">
+      <ListItem/>
+    </v-col>
   </v-row>
 </div>
 </template>
 
 <script setup>
 import CountdownItem from './components/CountdownItem.vue'
+import ListItem from './components/ListItem.vue'
 import SidebarItem from './components/SidebarItem/index.vue'
 import { useStore } from './store/index.js'
 const store = useStore()
