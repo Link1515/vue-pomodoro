@@ -2,8 +2,9 @@
 <div id="countdown">
   <h2 class="countdown_time">{{timeMin}}:{{timeSec}}</h2>
   <div class="countdown_btns">
-    <v-btn variant="outlined" icon>
+    <v-btn @click="store.mute = !store.mute" variant="outlined" icon style="position: relative">
       <img src="@/assets/images/icon-bell.svg">
+      <div v-if="store.mute" class="muteBar"></div>
     </v-btn>
     <v-btn
       @click="store.startCountdown"
@@ -50,5 +51,13 @@ const timeSec = computed(() => (store.currentTime % 60).toString().padStart(2, '
   justify-content: center;
   align-items: center;
   gap: 1rem
+}
+
+.muteBar {
+  width: 30px;
+  height: 2px;
+  transform: rotate(-40deg);
+  background-color: #fff;
+  position: absolute;
 }
 </style>
