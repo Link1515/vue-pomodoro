@@ -1,13 +1,22 @@
-import '@babel/polyfill'
-import 'mutationobserver-shim'
-import Vue from 'vue'
-import './plugins/bootstrap-vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import './registerServiceWorker'
-import './style/style.scss'
+import vuetify from './plugins/vuetify'
+import { loadFonts } from './plugins/webfontloader'
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import { registerSW } from 'virtual:pwa-register'
 
-Vue.config.productionTip = false
+// global style
+import './styles/global.scss'
 
-new Vue({
-  render: (h) => h(App)
-}).$mount('#app')
+registerSW({
+  onNeedRefresh () {},
+  onOfflineReady () {}
+})()
+
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
+loadFonts()
+
+createApp(App).use(vuetify).use(pinia).mount('#app')

@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
+
+html {
+  --theme-color: #304030;
+  overflow-y: auto;
+}
+
+body {
+  font-family: 'Fjalla One', sans-serif;
+  color: white;
+}
+
+.v-checkbox {
+  .v-label {
+    color: white;
+  }
+
+  &.v-input--dirty .v-label {
+    color: #aaa;
+  }
+
+}

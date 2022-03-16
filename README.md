@@ -1,5 +1,7 @@
-# 番茄鐘 pomodoro
+# Vue 3 + Vite
 
-[番茄鐘 pomodoro](https://link1515.github.io/vue-pomodoro/)
+This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-使用 Vue 框架製作，設計採用 https://challenge.thef2e.com/user/3?schedule=2590#works-2590
+## Recommended IDE Setup
+
+- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)

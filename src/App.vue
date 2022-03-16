@@ -1,83 +1,63 @@
-<template lang="pug">
-#app.h-100.overflow-hidden(:class="{push: sidebarIsOpen, break: countdownMode === 'break'}")
-  Sidebar(:listItems="listItems" @sendSidebarState="updateSidebarState")
-  b-row.mx-0.pt-5.overflow-hidden.flex-md-nowrap
-    b-col.flex-shrink-0(cols="12" :md="sidebarIsOpen ? 12 : 6" style="transition: 0.5s")
-      Countdown(:listItems="listItems" @sendCountdownMode="updateCountdownMode")
-    b-col.flex-shrink-0(cols="12" md="6")
-      Viewlist(:listItems="listItems" :countdownMode="countdownMode")
+<template>
+<div id="main"
+  class="overflow-hidden"
+  :class="{push: store.sidebarIsOpen, break: !store.isWorking}"
+>
+  <SidebarItem />
+  <v-row class="mx-0 pt-5 overflow-hidden flex-md-nowrap">
+    <v-col
+      cols="12" :md="store.sidebarIsOpen ? 12 : 6"
+      style="transition: 0.5s"
+      class="flex-shrink-0"
+    >
+      <CountdownItem/>
+    </v-col>
+    <v-col cols="12">
+      <ListItem/>
+    </v-col>
+  </v-row>
+</div>
 </template>
 
+<script setup>
+import CountdownItem from './components/CountdownItem.vue'
+import ListItem from './components/ListItem.vue'
+import SidebarItem from './components/SidebarItem/index.vue'
+import { useStore } from './store/index.js'
+const store = useStore()
+</script>
 <script>
-import Sidebar from '@/components/Sidebar.vue'
-import Countdown from '@/components/Countdown.vue'
-import Viewlist from '@/components/Viewlist.vue'
-
 export default {
-  name: 'App',
-  components: {
-    Sidebar,
-    Countdown,
-    Viewlist
-  },
-  data () {
-    return {
-      sidebarIsOpen: false,
-      countdownMode: 'work',
-      listItems: []
-    }
-  },
-  methods: {
-    updateSidebarState (value) {
-      this.sidebarIsOpen = value
-    },
-    updateCountdownMode (value) {
-      this.countdownMode = value
-    }
-  },
-  watch: {
-    listItems: {
-      deep: true,
-      handler () {
-        localStorage.setItem('pomodoro-listItems', JSON.stringify(this.listItems))
-      }
-    }
-  },
-  created () {
-    const localData = JSON.parse(localStorage.getItem('pomodoro-listItems'))
-    if (localData) {
-      this.listItems = localData
-    }
-  }
+  name: 'App'
 }
 </script>
 
 <style lang="scss">
-#app{
-  background-color: #304030;
-  background-image: url('~@/assets/img/tomato--orange.svg');
-  background-repeat: no-repeat;
-  background-size: 100vw;
-  background-position: center bottom;
-  padding-left: 4rem;
-  transition: padding 0.3s linear,background-position 0.3s linear;
+  #main {
+    height: 100vh;
+    background-color: var(--theme-color);
+    background-image: url('@/assets/images/tomato--orange.svg');
+    background-repeat: no-repeat;
+    background-size: 100vw;
+    background-position: center bottom;
+    padding-left: 72px;
+    transition: padding 0.3s linear,background-position 0.3s linear;
 
-  &.break {
-    background-image: url('~@/assets/img/tomato--green.svg');
+    &.break {
+      background-image: url('@/assets/images/tomato--green.svg');
+    }
   }
-}
 
 @media (min-width: 768px) {
-  #app{
+  #main{
     &.push {
       padding-left: 50vw;
       background-position: 50vw bottom;
     }
   }
 }
-
 @media (min-width: 992px) {
-  #app{
+  #main{
     background-size: 1200px;
   }
 }
