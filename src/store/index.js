@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { nanoid } from 'nanoid'
 
-const alarm = new Audio('./audio/alarm.mp3')
+const alarm = new Audio('/audio/alarm.mp3')
 
 export const useStore = defineStore('main', {
   state: () => {
